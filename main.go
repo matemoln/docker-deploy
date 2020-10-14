@@ -51,13 +51,13 @@ func fileHash(filePath string) (string, error) {
 	return fileHash, nil
 }
 
-func newFileEnvironment(filePath string) (string, error) {
+func newFileEnvironment(filePath string, filename string) (string, error) {
 	variable := strings.ToUpper(path.Base(filePath))
 
 	re := regexp.MustCompile(`[^A-Z0-9_]`)
 	variable = re.ReplaceAllString(variable, "_")
 
-	version, err := fileHash(filePath)
+	version, err := fileHash(path.Dir(filename) + "/" + filePath)
 	if err != nil {
 		return "", err
 	}
@@ -65,7 +65,7 @@ func newFileEnvironment(filePath string) (string, error) {
 	return fmt.Sprintf("%s=%s", variable, version), nil
 }
 
-func environmentFromYaml(yamlFile []byte) ([]string, error) {
+func environmentFromYaml(yamlFile []byte, filename string) ([]string, error) {
 	var environment []string
 	var cfg composeInfo
 
@@ -76,7 +76,7 @@ func environmentFromYaml(yamlFile []byte) ([]string, error) {
 
 	for _, v := range cfg.Configs {
 		if v.Name != "" {
-			env, err := newFileEnvironment(v.File)
+			env, err := newFileEnvironment(v.File, filename)
 			if err != nil {
 				log.Printf("Cannot generate environment for config file %s: %s", v.File, err.Error())
 			} else {
@@ -88,7 +88,7 @@ func environmentFromYaml(yamlFile []byte) ([]string, error) {
 
 	for _, v := range cfg.Secrets {
 		if v.Name != "" {
-			env, err := newFileEnvironment(v.File)
+			env, err := newFileEnvironment(v.File, filename)
 			if err != nil {
 				log.Printf("Cannot generate environment for secret file %s: %s", v.File, err.Error())
 			} else {
@@ -129,7 +129,7 @@ func loadEnvFromConfigFile(filename string, stdin io.Reader) ([]string, error) {
 		return nil, err
 	}
 
-	return environmentFromYaml(yamlFile)
+	return environmentFromYaml(yamlFile, filename)
 }
 
 var auth = flag.BoolP("with-registry-auth", "a", false, "Send registry authentication details to Swarm agents")
