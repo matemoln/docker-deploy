@@ -10,7 +10,7 @@ configs:
   my_config:
     name: my_config.${MYFILE_XML}
     file: ./myfile.xml
-    
+
 secrets:
   my_secret:
     name: service.${DATA_CREDENTIALS_JSON}
@@ -21,6 +21,19 @@ Will create two environment variables `MYFILE_XML` and `DATA_CREDENTIALS_JSON` w
 respective files and pass them to the `docker stack deploy` command.
 
 The stack name can be ommited, in that case the current directory name will be used instead.
+
+## Changes
+
+- Paths to files are resolved correctly even when docker-deploy is called from an other directory. E.g.: `docker-deploy -c /home/user/deployment/app/app.yml app`
+
+- If there is a variable in the filename such as below, the resulting environment variable will be created based on the parent directory + extension of the file.
+
+```yaml
+secrets:
+  secrets.env:
+    name: ${APP_NAME}.env.${SECRETS_ENV}
+    file: ../secrets/${APP_NAME}.env
+```
 
 ## Options
 
