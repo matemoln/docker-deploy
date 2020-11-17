@@ -22,16 +22,16 @@ respective files and pass them to the `docker stack deploy` command.
 
 The stack name can be ommited, in that case the current directory name will be used instead.
 
-## Changes
+## Changes to codestation/docker-deploy
 
 - Paths to files are resolved correctly even when docker-deploy is called from an other directory. E.g.: `docker-deploy -c /home/user/deployment/app/app.yml app`
 
-- If there is a variable in the filename such as below, the resulting environment variable will be created based on the parent directory + extension of the file.
+- If there is a variable in the filename such as below, the resulting environment variable will be created based on the variable.
 
 ```yaml
 secrets:
   secrets.env:
-    name: ${APP_NAME}.env.${SECRETS_ENV}
+    name: ${APP_NAME}.env.${APP_NAME_ENV}
     file: ../secrets/${APP_NAME}.env
 ```
 

@@ -54,11 +54,8 @@ func fileHash(filePath string) (string, error) {
 func newFileEnvironment(filePath string, filename string) (string, error) {
 	variableName := filePath
 	if strings.Contains(filePath, "$") {
-		fileExt := path.Ext(filePath)
-		containingDir := path.Base(path.Dir(filePath))
-		variableName = containingDir + fileExt
-
 		variableInFilePath := strings.Split(strings.Split(filePath, "${")[1],"}")[0]
+		variableName = strings.Replace(filePath, "${" + variableInFilePath + "}", variableInFilePath, 1)
 		filePath = strings.Replace(filePath, "${" + variableInFilePath + "}", os.Getenv(variableInFilePath), 1)
 		// log.Printf("replaced " + variableInFilePath + " to " + os.Getenv(variableInFilePath))
 	}
