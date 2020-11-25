@@ -41,3 +41,10 @@ secrets:
 * `--with-registry-auth, -a` Send registry authentication details to Swarm agents.
 * `--prune, -p` Prune services that are no longer referenced.
 * `--host, -H` Daemon socket(s) to connect to.
+
+## Installation
+
+```sh
+docker run --rm -v "$PWD":/go/bin golang:1.14 /bin/bash -c "go get github.com/matemoln/docker-deploy"
+sudo mv docker-deploy /usr/local/bin
+```
