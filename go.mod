@@ -1,4 +1,4 @@
-module megpoid.xyz/go/docker-deploy
+module github.com/matemoln/docker-deploy
 
 go 1.13
 
